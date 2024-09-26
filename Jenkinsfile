@@ -6,7 +6,6 @@ pipeline {
     }
 
     environment {
-        //DATADOG_API_KEY = credentials('datadog-api-key')
         RECIPIENT = 'pansuang.12@gmail.com'
     }
 
@@ -20,23 +19,34 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    app = docker.build("myexpressapp:latest").inside {
+                    // Build the Docker image
+                    def app = docker.build("myexpressapp:latest")
+                }
+            }
+        }
+
+        stage('Run App') {
+            steps {
+                script {
+                    // Run the app inside the Docker container
+                    docker.image("myexpressapp:latest").inside {
                         sh 'npm install'
                         sh 'npm run dev'
                     }
-                } // Closing script block here
+                }
             }
         }
 
         stage('Test') {
             steps {
                 script {
-                    app.inside {
-                        //sh 'npm run test' // Use sh to run shell commands in Jenkins
-                        bat 'npm run test'
+                    // Run tests inside the Docker container
+                    docker.image("myexpressapp:latest").inside {
+                        sh 'npm run test'
                     }
                 }
             }
         }
     }
 }
+
