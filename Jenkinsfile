@@ -20,7 +20,9 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    app = docker.build("myexpressapp:latest")
+                    app = docker.build("myexpressapp:latest").inside {
+                        sh 'npm install'
+                        sh 'npm run dev'
                 } // Closing script block here
             }
         }
