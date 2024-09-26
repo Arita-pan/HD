@@ -23,6 +23,7 @@ pipeline {
                     app = docker.build("myexpressapp:latest").inside {
                         sh 'npm install'
                         sh 'npm run dev'
+                    }
                 } // Closing script block here
             }
         }
