@@ -5,7 +5,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "server": "vite preview",
+    "preview": "vite preview",
+    "test:unit": "vue-cli-service test:unit",
+    "start": "node app.js",
+    "test": "jest"
   },
   "dependencies": {
     "vue": "^3.3.4"
