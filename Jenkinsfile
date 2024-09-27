@@ -10,25 +10,26 @@ pipeline {
     }
 
     stages {
+        stage('Test Docker Access') {
+            steps {
+                script {
+                    // Test Docker access before proceeding
+                    powershell 'docker version'
+                }
+            }
+        }
+
         stage('Clone repository') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
                 script {
                     // Build the Docker image
-                    def app = docker.build("myexpressapp:latest")
-                }
-            }
-        }
-
-        stage('Test Docker Access') {
-            steps {
-                script {
-                    powershell 'docker version'
+                    app = docker.build("myexpressapp:latest")
                 }
             }
         }
@@ -37,9 +38,10 @@ pipeline {
             steps {
                 script {
                     // Run the app inside the Docker container
-                    docker.image("myexpressapp:latest").inside {
-                        sh 'npm install'
-                        sh 'npm run dev'
+                    app.inside {
+                        // Using powershell for Windows, use sh for Linux containers
+                        powershell 'npm install'
+                        powershell 'npm run dev'
                     }
                 }
             }
@@ -49,8 +51,9 @@ pipeline {
             steps {
                 script {
                     // Run tests inside the Docker container
-                    docker.image("myexpressapp:latest").inside {
-                        sh 'npm run test'
+                    app.inside {
+                        // If running on Windows, use powershell; use sh if Linux
+                        powershell 'npm run test'
                     }
                 }
             }
