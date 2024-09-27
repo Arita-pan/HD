@@ -25,6 +25,14 @@ pipeline {
             }
         }
 
+        stage('Test Docker Access') {
+            steps {
+                script {
+                    powershell 'docker version'
+                }
+            }
+        }
+
         stage('Run App') {
             steps {
                 script {
